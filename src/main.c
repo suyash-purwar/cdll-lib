@@ -80,6 +80,7 @@ void remove_node(CDLL* ll, const void* data, bool (*matcher)(const void* a, cons
         if (node == ll->head) ll->head = node->next;
     }
 
+    free(node -> data);
     free(node);
     node = NULL;
 }
@@ -163,6 +164,7 @@ void purge_ll(CDLL* ll) {
         last_node = next_last_node;
     } while (ll -> head != last_node);
 
+    free(ll -> head -> data);
     free(ll -> head);
     last_node = NULL;
     ll -> head = NULL;
@@ -231,6 +233,8 @@ int main() {
     print_element(value2);
 
     remove_node(&ll, &(int){40}, node_matcher);
+
+    purge_ll(&ll);
 
     CDLL ll2 = create_ll(sizeof(int));
 
