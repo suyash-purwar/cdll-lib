@@ -14,14 +14,10 @@ void print_element(const void* data) {
 }
 
 bool node_matcher(const void* a, const void* b, const size_t data_size) {
-    size_t i = 0;
+    const int* n1 = (int*)a;
+    const int* n2 = (int*)b;
 
-    while (i < data_size) {
-        if (*(char*)a == *(char*)b) return false;
-        i++;
-    }
-
-    return true;
+    return *n1 == *n2;
 }
 
 int main() {
@@ -35,22 +31,31 @@ int main() {
 
     cdll_iterate(&ll, print_element);
     const size_t len = cdll_length(&ll);
-    printf("%zu\n", len);
+    printf("\n%zu\n", len);
 
     const long long index = cdll_get_node_index(&ll, &(int){30}, node_matcher);
     printf("%lld\n", index);
 
     const void* value_address = cdll_get_node_at_index(&ll, 6);
     print_element(value_address);
+    printf("\n");
 
     cdll_remove(&ll, &(int){40}, node_matcher);
     cdll_iterate(&ll, print_element);
+    printf("\n");
+
     cdll_remove(&ll, &(int){10}, node_matcher);
     cdll_iterate(&ll, print_element);
+    printf("\n");
+
     cdll_remove(&ll, &(int){390}, node_matcher);
     cdll_iterate(&ll, print_element);
+    printf("\n");
+
     cdll_remove(&ll, &(int){30}, node_matcher);
     cdll_iterate(&ll, print_element);
+    printf("\n");
+
     cdll_remove(&ll, &(int){11}, node_matcher);
 
     // Following statements are checking for edge cases

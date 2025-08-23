@@ -25,7 +25,7 @@ bool cdll_is_empty(const CDLL* ll) {
 void cdll_add(CDLL* ll, void* data) {
     struct CDLL_Node* new_node = (CDLL_Node*)calloc(1, sizeof(CDLL_Node));
     void *data_address = calloc(1, ll -> data_size);
-    memcpy(data, data_address, ll -> data_size);
+    memcpy(data_address, data, ll -> data_size);
 
     if (!new_node) {
         printf("Failed to allocate memory for new node");
@@ -56,7 +56,7 @@ void cdll_remove(CDLL* ll, const void* data, bool (*matcher)(const void* a, cons
 
     CDLL_Node* node = ll -> head;
 
-    while (matcher(node -> data, data, ll -> data_size)) {
+    while (!matcher(node -> data, data, ll -> data_size)) {
         node = node -> next;
 
         if (node == ll -> head) {
@@ -91,8 +91,6 @@ void cdll_iterate(const CDLL* ll, void (*print)(const void* item)) {
         print(node -> data);
         node = node -> next;
     } while (ll -> head != node);
-
-    printf("\n");
 }
 
 size_t cdll_length(const CDLL* ll) {
