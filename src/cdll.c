@@ -5,33 +5,33 @@
 
 #include "../includes/cdll.h"
 
-#include <string.h>
-
 CDLL cdll_create(const size_t data_size) {
     const struct CDLL ll = { NULL, data_size };
     return ll;
-}
-
-void copy_data(void* src, void* dest, const size_t byte_length) {
-    for (int i = 0; i < byte_length; i++) {
-        *((char*)dest + i) = *((char*)src + i);
-    }
 }
 
 bool cdll_is_empty(const CDLL* ll) {
     return ll -> head == NULL;
 }
 
-void cdll_add(CDLL* ll, void* data) {
+char* cdll_strerror(const CDLL_Status errno) {
+    switch (errno) {
+        case LL_OK: return "Success";
+        case LL_ERR_OUT_OF_BOUNDS: return "Index out of bounds";
+        case LL_ERR_NOT_FOUND: return "Node not found";
+        case LL_ERR_EMPTY: return "List is empty";
+        case LL_ERR_OOM: return "Memory allocation failed";
+        default: return "Unknown Error";
+    }
+}
+
+CDLL_Status cdll_add(CDLL* ll, const void* data) {
     struct CDLL_Node* new_node = (CDLL_Node*)calloc(1, sizeof(CDLL_Node));
     void *data_address = calloc(1, ll -> data_size);
+
+    if (!data_address || !new_node) return LL_ERR_OOM;
+
     memcpy(data_address, data, ll -> data_size);
-
-    if (!new_node) {
-        printf("Failed to allocate memory for new node");
-        exit(EXIT_FAILURE);
-    }
-
     new_node -> data = data_address;
 
     if (ll -> head == NULL) {
@@ -46,23 +46,19 @@ void cdll_add(CDLL* ll, void* data) {
         ll -> head -> prev -> next = new_node;
         ll -> head -> prev = new_node;
     }
+
+    return LL_OK;
 }
 
-void cdll_remove(CDLL* ll, const void* data, bool (*matcher)(const void* a, const void *b, const size_t data_size)) {
-    if (cdll_is_empty(ll)) {
-        printf("List is empty\n");
-        return;
-    }
+CDLL_Status cdll_remove(CDLL* ll, const void* data, bool (*matcher)(const void* a, const void *b, const size_t data_size)) {
+    if (cdll_is_empty(ll)) return LL_ERR_NOT_FOUND;
 
     CDLL_Node* node = ll -> head;
 
     while (!matcher(node -> data, data, ll -> data_size)) {
         node = node -> next;
 
-        if (node == ll -> head) {
-            printf("The provided data node is not present in the list");
-            exit(EXIT_FAILURE);
-        }
+        if (node == ll -> head) return LL_ERR_NOT_FOUND;
     }
 
     node -> next -> prev = node -> prev;
@@ -77,20 +73,21 @@ void cdll_remove(CDLL* ll, const void* data, bool (*matcher)(const void* a, cons
     free(node -> data);
     free(node);
     node = NULL;
+
+    return LL_OK;
 }
 
-void cdll_iterate(const CDLL* ll, void (*print)(const void* item)) {
+CDLL_Status cdll_iterate(const CDLL* ll, void (*print)(const void* item)) {
     const CDLL_Node* node = ll -> head;
 
-    if (cdll_is_empty(ll)) {
-        printf("List is empty\n");
-        return;
-    }
+    if (cdll_is_empty(ll)) return LL_ERR_EMPTY;
 
     do {
         print(node -> data);
         node = node -> next;
     } while (ll -> head != node);
+
+    return LL_OK;
 }
 
 size_t cdll_length(const CDLL* ll) {
@@ -107,27 +104,34 @@ size_t cdll_length(const CDLL* ll) {
     return length;
 }
 
-long long cdll_get_node_index(const CDLL* ll, const void* data, bool (*matcher)(const void* a, const void *b, const size_t data_size)) {
-    if (cdll_is_empty(ll)) return -1;
+CDLL_Status cdll_get_node_index(const CDLL* ll, const void* data, bool (*matcher)(const void* a, const void *b, const size_t data_size), long long* index) {
+    *index = 0;
+
+    if (cdll_is_empty(ll)) {
+        *index = -1;
+        return LL_ERR_NOT_FOUND;
+    }
 
     const CDLL_Node* node = ll -> head;
-    long long index = 0;
 
-    while (matcher(node -> data, data,  ll -> data_size)) {
-        index++;
+    while (!matcher(node -> data, data,  ll -> data_size)) {
+        (*index) += 1;
         node = node -> next;
 
         if (node == ll -> head) {
-            index = -1;
-            break;
+            *index = -1;
+            return LL_ERR_NOT_FOUND;
         }
     }
 
-    return index;
+    return LL_OK;
 }
 
-void* cdll_get_node_at_index(const CDLL* ll, const int index) {
-    if (index < 0 || cdll_is_empty(ll)) return NULL;
+CDLL_Status cdll_get_node_at_index(const CDLL* ll, const int index, const void* found_node) {
+    if (index < 0 || cdll_is_empty(ll)) {
+        found_node = NULL;
+        return LL_ERR_OUT_OF_BOUNDS;
+    }
 
     long long i = 0;
     const CDLL_Node* node = ll -> head;
@@ -137,11 +141,13 @@ void* cdll_get_node_at_index(const CDLL* ll, const int index) {
         i++;
 
         if (node == ll -> head) {
-            return NULL;
+            found_node = NULL;
+            return LL_ERR_OUT_OF_BOUNDS;
         }
     }
 
-    return node -> data;
+    found_node = node -> data;
+    return LL_OK;
 }
 
 void cdll_purge(CDLL* ll) {
@@ -160,4 +166,5 @@ void cdll_purge(CDLL* ll) {
     free(ll -> head);
     last_node = NULL;
     ll -> head = NULL;
+    ll = NULL;
 }
