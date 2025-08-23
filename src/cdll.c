@@ -127,9 +127,9 @@ CDLL_Status cdll_get_node_index(const CDLL* ll, const void* data, bool (*matcher
     return LL_OK;
 }
 
-CDLL_Status cdll_get_node_at_index(const CDLL* ll, const int index, const void* found_node) {
+CDLL_Status cdll_get_node_at_index(const CDLL* ll, const int index, const void** found_node) {
     if (index < 0 || cdll_is_empty(ll)) {
-        found_node = NULL;
+        *found_node = NULL;
         return LL_ERR_OUT_OF_BOUNDS;
     }
 
@@ -141,12 +141,12 @@ CDLL_Status cdll_get_node_at_index(const CDLL* ll, const int index, const void* 
         i++;
 
         if (node == ll -> head) {
-            found_node = NULL;
+            *found_node = NULL;
             return LL_ERR_OUT_OF_BOUNDS;
         }
     }
 
-    found_node = node -> data;
+    *found_node = node -> data;
     return LL_OK;
 }
 

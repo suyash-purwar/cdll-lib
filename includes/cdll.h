@@ -36,7 +36,7 @@ size_t cdll_length(const CDLL*);
 
 CDLL_Status cdll_get_node_index(const CDLL*, const void*, bool (*matcher)(const void*, const void*, const size_t), long long* index);
 
-CDLL_Status cdll_get_node_at_index(const CDLL* ll, const int, const void* node_data);
+CDLL_Status cdll_get_node_at_index(const CDLL* ll, const int, const void** node_data);
 
 void cdll_purge(CDLL*);
 

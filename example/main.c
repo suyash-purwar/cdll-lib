@@ -92,7 +92,7 @@ int main() {
 
     const void* value2 = NULL;
     CDLL_Status s7;
-    if (LL_OK != (s7 = cdll_get_node_at_index(&ll, 1, value2))) {
+    if (LL_OK != (s7 = cdll_get_node_at_index(&ll, 1, &value2))) {
         fprintf(stderr, "%s\n", cdll_strerror(s7));
     } else {
         print_element(value2);
