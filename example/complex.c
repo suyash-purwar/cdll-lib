@@ -82,6 +82,10 @@ int main() {
         fprintf(stderr, "%s\n", cdll_strerror(s6));
     }
 
+    void* node_data2 = NULL;
+    CDLL_Status s7 = cdll_get_node_at_index(&ll, -1, &node_data2);
+    printf("%s\n", cdll_strerror(s7));
+
     printf("%ld\n", cdll_length(&ll));
 
     cdll_purge(&ll);
