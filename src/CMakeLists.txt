@@ -1,8 +1,7 @@
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 add_library(cdll SHARED cdll.c)
-
-message("${CMAKE_INSTALL_INCLUDEDIR}")
 
 target_include_directories(
         cdll PUBLIC
@@ -18,18 +17,37 @@ endif()
 install(
         TARGETS cdll
         EXPORT cdllTargets
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/cdll
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/cdll
         INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 install(
         DIRECTORY ${PROJECT_SOURCE_DIR}/include/
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/calc
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/cdll
 )
 
 install(
         EXPORT cdllTargets
-        FILE cdllTargets.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cdll
+        FILE CdllTargets.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cdll/cmake
+)
+
+configure_package_config_file(
+        "${PROJECT_SOURCE_DIR}/cmake/CdllConfig.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/CdllConfig.cmake"
+        INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cdll/cmake"
+)
+
+write_basic_package_version_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/CdllConfigVersion.cmake"
+        VERSION 0.1.0
+        COMPATIBILITY SameMajorVersion
+)
+
+install(
+        FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/CdllConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/CdllConfigVersion.cmake"
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cdll/cmake"
 )
