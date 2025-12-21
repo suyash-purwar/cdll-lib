@@ -12,4 +12,10 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+option(BUILD_EXAMPLE_APP "Build example application" OFF)
+
 add_subdirectory(src)
+
+if (BUILD_EXAMPLE_APP)
+    add_subdirectory(example)
+endif ()
