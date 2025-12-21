@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "cdll.h"
+#include "cdll/cdll.h"
 
 CDLL cdll_create(const size_t data_size) {
     const struct CDLL ll = { NULL, data_size };

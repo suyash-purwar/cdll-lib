@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "../includes/cdll.h"
+#include <cdll/cdll.h>
+
+#define UNUSED(x) (void)(x)
 
 void print_element(const void* data) {
     if (data == NULL) {
@@ -14,6 +16,8 @@ void print_element(const void* data) {
 }
 
 bool node_matcher(const void* a, const void* b, const size_t data_size) {
+    UNUSED(data_size);
+
     const int* n1 = (int*)a;
     const int* n2 = (int*)b;
 

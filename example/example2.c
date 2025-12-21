@@ -3,7 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../includes/cdll.h"
+#include <cdll/cdll.h>
+
+#define UNUSED(x) (void)(x)
 
 typedef struct {
     char name[20];
@@ -32,6 +34,8 @@ void print(const void* person) {
 }
 
 bool node_matcher(const void* a, const void* b, const size_t data_size) {
+    UNUSED(data_size);
+
     const Person* p1 = (Person*)a;
     const Person* p2 = (Person*)b;
 
@@ -82,7 +86,7 @@ int main() {
         fprintf(stderr, "%s\n", cdll_strerror(s6));
     }
 
-    void* node_data2 = NULL;
+    const void* node_data2 = NULL;
     CDLL_Status s7 = cdll_get_node_at_index(&ll, -1, &node_data2);
     printf("%s\n", cdll_strerror(s7));
 
