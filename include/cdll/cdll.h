@@ -1,6 +1,11 @@
 #ifndef CDLL_H
 #define CDLL_H
 
+/**
+ * @file cdll.h
+ * @brief Generic circular doubly linked list library
+ */
+
 typedef enum {
     LL_OK = 0,
     LL_ERR_OUT_OF_BOUNDS,
@@ -15,11 +20,18 @@ typedef struct CDLL_Node {
     struct CDLL_Node* next;
 } CDLL_Node;
 
+/**
+ * @brief Linked list
+ */
 typedef struct CDLL {
     CDLL_Node* head;
     size_t data_size;
 } CDLL;
 
+/**
+ * @brief Creates a new linked list
+ * @return Empty initialised list
+ */
 CDLL cdll_create(const size_t);
 
 char* cdll_strerror(const CDLL_Status);
