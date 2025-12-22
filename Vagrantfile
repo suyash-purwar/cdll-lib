@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y build-essential valgrind htop cmake tree
-    apt-get install -y doxygen graphviz
+    apt-get install -y build-essential htop tree
+    apt-get install -y cmake doxygen graphviz valgrind libcriterion-dev
   SHELL
 end
