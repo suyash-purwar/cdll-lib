@@ -14,6 +14,7 @@ set(CMAKE_C_EXTENSIONS OFF)
 
 option(BUILD_EXAMPLE_APP "Build example application" OFF)
 option(BUILD_DOCS "Build docs" OFF)
+option(BUILD_TESTS "Build tests" OFF)
 
 add_subdirectory(src)
 
@@ -23,4 +24,9 @@ endif ()
 
 if (BUILD_DOCS)
     add_subdirectory(docs)
+endif ()
+
+if (BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
 endif ()
