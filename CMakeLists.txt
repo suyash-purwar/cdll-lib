@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.28)
 
 project(
-        cdll
+        ilist
         VERSION 0.1.0
         LANGUAGES C
-        DESCRIPTION "Library for generic circular doubly linked list"
-        HOMEPAGE_URL "https://github.com/suyash-purwar/cdll-lib"
+        DESCRIPTION "An intrusive circular doubly linked list"
+        HOMEPAGE_URL "https://github.com/suyash-purwar/ilist"
 )
 
 set(CMAKE_C_STANDARD 17)
